@@ -8,8 +8,7 @@ import java.sql.SQLInput;
 
 public class ConectBanco {
 	
-	private static final String SQL_INSERT = "insert into treinamento(" +
-	"id , treinamento , nome, email, area  )" + " VALUES (?,?,?,?,?)";
+	private static final String SQL_INSERT = "insert into treinamento VALUES (?,?,?,?,?)";
 	
 		
 	private Connection con = null;
@@ -19,12 +18,14 @@ public class ConectBanco {
 	public ConectBanco() {
 		
 		try {
-			Class.forName("org.sqlite.JDBC");
-			  con = DriverManager.getConnection("jdbc:sqlite:cadastro.db");
+//			Class.forName("org.sqlite.JDBC");
+			Class.forName("org.mariadb.jdbc.Driver");
+//			  con = DriverManager.getConnection("jdbc:sqlite:cadastro.db");
+			  con =  DriverManager.getConnection("jdbc:mariadb://localhost:3306/mydb?user=ubuntu&password=ubuntu");
 			  
 			  sql = con.createStatement();
-			  sql.executeUpdate("drop table if exists treinamento");
-			  sql.executeUpdate("create table treinamento (id integer, treinamento string, nome string, email string ,area string)");
+//			  sql.executeUpdate("drop table if exists treinamento");
+//			  sql.executeUpdate("create table treinamento (id integer, treinamento string, nome string, email string ,area string)");
 			  con.prepareStatement(SQL_INSERT);
 		} catch (Exception e) {
 			System.out.println("Erro ao processar dados" + e.getMessage());
@@ -37,10 +38,11 @@ public class ConectBanco {
 		
 		try {
 			PreparedStatement sqlInsert = con.prepareStatement(SQL_INSERT);
-			sqlInsert.setString(1, model.getId());
+			sqlInsert.setInt(1, model.getId());
 			sqlInsert.setString(2, model.getTreinamento());
-			sqlInsert.setString(3, model.getArea());
+			sqlInsert.setString(3,model.getNome());
 			sqlInsert.setString(4, model.getEmail());
+			sqlInsert.setString(5, model.getArea());
 			
 			sqlInsert.executeUpdate();
 			
